@@ -10,7 +10,7 @@ public class DateUtil {
     private static final DateTimeFormatter DATE_FORMATTER_SLASH = DateTimeFormatter.ofPattern("dd/MM/yy");
     private static final DateTimeFormatter DATE_FORMATTER_DOT = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     private static final DateTimeFormatter DATE_FORMATTER_PARSE = new DateTimeFormatterBuilder()
-            .appendPattern("[d/MM/]" + "[d.MM.]")
+            .appendPattern("[d/MM/]" + "[d.MM.]" + "[d.MM,]")
             .optionalStart().appendPattern("yyyy").optionalEnd()
             .optionalStart().appendValueReduced(ChronoField.YEAR, 2, 2, 1922)
             .optionalEnd().toFormatter();
@@ -35,6 +35,6 @@ public class DateUtil {
     }
 
     private static boolean checkDate(String date) {
-        return date.matches("^\\d{1,2}(/|\\.)\\d{2}(/|\\.)\\d{2,4}$"); //should be better
+        return date.matches("^\\d{1,2}(/|\\.)\\d{2}(/|\\.|\\,)\\d{2,4}$"); //should be better
     }
 }

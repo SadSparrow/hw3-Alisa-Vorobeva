@@ -18,7 +18,7 @@ public class Main {
 
         companies.printALLCompaniesShort();
         companies.printSecurityExpired();
-        companies.printCompaniesFoundedAfter("15/05/75");
+        companies.printCompaniesFoundedAfter("15.05,75");
         companies.printSecurityByCurrency(Currency.RUB);
     }
 }

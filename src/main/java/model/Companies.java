@@ -4,11 +4,15 @@ import util.DateUtil;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiConsumer;
 
 public class Companies {
     private final List<Company> companies;
 
     public Companies(List<Company> companies) {
+        Objects.requireNonNull(companies, "Companies must not be null");
         this.companies = companies;
     }
 
@@ -17,19 +21,17 @@ public class Companies {
     }
 
     public void printSecurityExpired() {
-        int count = 0;
+        AtomicInteger count = new AtomicInteger();
 
-        for (Company c : companies) {
-            for (Security s : c.getSecurities()) {
-                if (s.getDate().isBefore(LocalDate.now())) {
-                    count++;
-                    System.out.println(count + ". Security:");
-                    System.out.println("code: " + s.getCode() +
-                            "\ndate: " + DateUtil.dateToString(s.getDate()) +
-                            "\ncompany owner: " + c.getName());
-                }
+        printCompanySecurity((c, s) -> {
+            if (s.getDate().isBefore(LocalDate.now())) {
+                count.getAndIncrement();
+                System.out.println(count + ". Security:");
+                System.out.println("code: " + s.getCode() +
+                        "\ndate: " + DateUtil.dateToString(s.getDate()) +
+                        "\ncompany owner: " + c.getName());
             }
-        }
+        });
         System.out.println("Count: " + count);
     }
 
@@ -43,13 +45,17 @@ public class Companies {
     }
 
     public void printSecurityByCurrency(Currency currency) {
+        printCompanySecurity((c, s) -> {
+            if (s.getCurrency().contains(currency)) {
+                System.out.println("company id: " + c.getId() + ", code: " + s.getCode());
+            }
+        });
+    }
 
+    private void printCompanySecurity(BiConsumer<Company, Security> biConsumer) {
         for (Company c : companies) {
-
             for (Security s : c.getSecurities()) {
-                if (s.getCurrency().contains(currency)) {
-                    System.out.println("company id: " + c.getId() + ", code: " + s.getCode());
-                }
+                biConsumer.accept(c, s);
             }
         }
     }
